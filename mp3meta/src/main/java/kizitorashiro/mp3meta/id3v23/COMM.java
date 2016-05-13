@@ -1,4 +1,4 @@
-package kizitorashiro.mp3meta.id3v22;
+package kizitorashiro.mp3meta.id3v23;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -6,12 +6,10 @@ import java.util.HashMap;
 import kizitorashiro.mp3meta.ID3v2Exception;
 import kizitorashiro.mp3meta.ID3v2Utils;
 
-
-public class COM implements ID3v22FrameBody{
+public class COMM implements ID3v23FrameBody{
 
 	@Override
 	public byte[] create(HashMap<String, String> args) throws ID3v2Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -24,7 +22,6 @@ public class COM implements ID3v22FrameBody{
 		try {
 			language = new String( languageBytes, "ISO-8859-1");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
 			return null;
 		}
 		
@@ -81,8 +78,8 @@ public class COM implements ID3v22FrameBody{
 		try {
 			comment = ID3v2Utils.convertNewline(commentBytes, encording);
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			comment = "";
 		}
 		
 		//System.out.println("comment:" +comment);
@@ -94,7 +91,6 @@ public class COM implements ID3v22FrameBody{
 		readableText.append(",");
 		readableText.append(comment);
 
-		
 		return readableText.toString();
 	}
 

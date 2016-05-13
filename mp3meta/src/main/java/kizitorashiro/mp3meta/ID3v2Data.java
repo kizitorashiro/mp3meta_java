@@ -37,7 +37,7 @@ public class ID3v2Data {
 		ID3v2Frame frame = null;
 		int bodySize = header.getBodySize();
 		int readLen = 0;
-		while( readLen < bodySize ){
+		while((bodySize - readLen) >= 10){
 			frame = getSupportClass(this.version);
 			readLen += frame.load(is);
 			if(frame.getFrameID().length() > 0){
