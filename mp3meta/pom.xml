@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>kizitorashiro</groupId>
 	<artifactId>mp3meta</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>mp3meta</name>
 	<description>command line tools to edit mp3 meta tag</description>
 	<dependencies>

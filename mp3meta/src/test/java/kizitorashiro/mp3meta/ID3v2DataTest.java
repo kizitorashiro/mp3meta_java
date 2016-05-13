@@ -16,8 +16,7 @@ public class ID3v2DataTest {
 
 	@Test
 	public void test_load_v23() throws Exception{
-		//String originalFilePath = this.getClass().getClassLoader().getResource(TESTFILE_V23).getPath();
-		String originalFilePath = "/Users/shizuku/Desktop/EC152.mp3";
+		String originalFilePath = this.getClass().getClassLoader().getResource(TESTFILE_V23).getPath();
 		
 		ID3v2Data data = new ID3v2Data();
 		data.load(originalFilePath);
@@ -51,7 +50,6 @@ public class ID3v2DataTest {
 	@Test
 	public void test_load() throws Exception{
 		String originalFilePath = this.getClass().getClassLoader().getResource(TESTFILE_V22).getPath();
-		//String originalFilePath = "/Users/shizuku/Desktop/EC100.mp3";
 		
 		ID3v2Data data = new ID3v2Data();
 		data.load(originalFilePath);
