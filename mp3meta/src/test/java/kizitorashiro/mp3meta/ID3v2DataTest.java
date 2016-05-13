@@ -12,10 +12,46 @@ import org.junit.Test;
 
 public class ID3v2DataTest {
 	private final String TESTFILE_V22 = "03_Letting_You(2.2).mp3";
+	private final String TESTFILE_V23 = "04_Discipline(2.3).mp3";
+
+	@Test
+	public void test_load_v23() throws Exception{
+		//String originalFilePath = this.getClass().getClassLoader().getResource(TESTFILE_V23).getPath();
+		String originalFilePath = "/Users/shizuku/Desktop/EC152.mp3";
+		
+		ID3v2Data data = new ID3v2Data();
+		data.load(originalFilePath);
+		String[] frameIDList = data.getFrameIDList();
+		for(int i=0;i<frameIDList.length;i++){
+			System.out.print(frameIDList[i]);
+			System.out.print(":");
+			String[] readableText = data.getReadableText(frameIDList[i]);
+			for(int j=0;j<readableText.length;j++){
+				System.out.println("\t" + readableText[j]);
+			}
+			
+		}
+		/*
+		assertEquals("TT2", frameIDList[0]);
+		assertEquals("TP1", frameIDList[1]);
+		assertEquals("TCM", frameIDList[2]);
+		assertEquals("TAL", frameIDList[3]);
+		assertEquals("TRK", frameIDList[4]);
+		assertEquals("TPA", frameIDList[5]);
+		assertEquals("TYE", frameIDList[6]);
+		assertEquals("TBP", frameIDList[7]);
+		assertEquals("COM", frameIDList[8]);
+		assertEquals("TEN", frameIDList[9]);
+		assertEquals("PIC", frameIDList[10]);
+		assertEquals("ULT", frameIDList[11]);
+			*/
+	}
+	
 	
 	@Test
 	public void test_load() throws Exception{
 		String originalFilePath = this.getClass().getClassLoader().getResource(TESTFILE_V22).getPath();
+		//String originalFilePath = "/Users/shizuku/Desktop/EC100.mp3";
 		
 		ID3v2Data data = new ID3v2Data();
 		data.load(originalFilePath);

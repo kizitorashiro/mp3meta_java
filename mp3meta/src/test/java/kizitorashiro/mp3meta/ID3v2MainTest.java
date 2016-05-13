@@ -37,7 +37,8 @@ public class ID3v2MainTest {
 	
 	@Test
 	public void test_process_read_size2(){
-		String originalFilePath = this.getClass().getClassLoader().getResource("03_Letting_You(2.2).mp3").getPath();
+		//String originalFilePath = this.getClass().getClassLoader().getResource("03_Letting_You(2.2).mp3").getPath();
+		String originalFilePath = "/Users/shizuku/Desktop/EC100.mp3";
 		String[] args = {"read", originalFilePath};
 		System.out.println("$ java -jar mp3meta.jar " + args[0] + " " + args[1]);
 		

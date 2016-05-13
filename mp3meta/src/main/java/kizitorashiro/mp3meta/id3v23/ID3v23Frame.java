@@ -1,4 +1,4 @@
-package kizitorashiro.mp3meta.id3v22;
+package kizitorashiro.mp3meta.id3v23;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,10 +13,8 @@ import kizitorashiro.mp3meta.ID3v2InvalidFormatException;
 import kizitorashiro.mp3meta.ID3v2SystemException;
 import kizitorashiro.mp3meta.ID3v2UnSupportedDataException;
 
-
-
-public class ID3v22Frame implements ID3v2Frame{
-	private byte[] headerRawData = new byte[6];
+public class ID3v23Frame implements ID3v2Frame{
+	private byte[] headerRawData = new byte[10];
 	private byte[] bodyRawData = null;
 	private String frameID;
 	private int frameSize;
@@ -32,16 +30,17 @@ public class ID3v22Frame implements ID3v2Frame{
 			throw new ID3v2InvalidFormatException("frame header size is invalid [" + headerReadLen + "]");
 		}
 		
-		byte[] frameIDBytes = { headerRawData[0], headerRawData[1], headerRawData[2] };
+		byte[] frameIDBytes = { headerRawData[0], headerRawData[1], headerRawData[2], headerRawData[3] };
 		
 		this.frameID = new String(frameIDBytes, "ISO-8859-1");
 		this.frameID = this.frameID.trim();
 		
-		int[] frameSizeBytes = { headerRawData[3] & 0xFF, headerRawData[4] & 0xFF, headerRawData[5] & 0xFF };
-		this.frameSize = ( (frameSizeBytes[0] << 16) | ( frameSizeBytes[1] << 8) | frameSizeBytes[2]);
+		int[] frameSizeBytes = { headerRawData[4] & 0xFF, headerRawData[5] & 0xFF, headerRawData[6] & 0xFF, headerRawData[7] & 0xFF };
+		
+		frameSize = (frameSizeBytes[0] << 24) | (frameSizeBytes[1] << 16) | (frameSizeBytes[2] << 8) | frameSizeBytes[3];
 		
 		// TODO if body size is large, then load data to tmpfile, not RAM
-		this.bodyRawData = new byte[this.frameSize];
+		this.bodyRawData = new byte[frameSize];
 		
 		int bodyReadLen = is.read(bodyRawData, 0, bodyRawData.length);
 		
@@ -63,7 +62,7 @@ public class ID3v22Frame implements ID3v2Frame{
 	@Override
 	public void create(String frameID, HashMap<String, String> args) throws ID3v2Exception {
 		setFrameID(frameID);
-		ID3v22FrameBody frameBody = getSupportClass(frameID, true);
+		ID3v23FrameBody frameBody = getSupportClass(frameID, true);
 		if(frameBody != null){
 			bodyRawData = frameBody.create(args);
 			setFrameSize(bodyRawData.length);
@@ -86,7 +85,7 @@ public class ID3v22Frame implements ID3v2Frame{
 
 	@Override
 	public String getFrameValueText() throws ID3v2Exception {
-		ID3v22FrameBody frameBody = null;
+		ID3v23FrameBody frameBody = null;
 		frameBody = getSupportClass(frameID, false);
 		if(frameBody != null){
 			return frameBody.getReadableText(this.bodyRawData);
@@ -101,7 +100,7 @@ public class ID3v22Frame implements ID3v2Frame{
 	}
 
 	private void setFrameID(String frameID) throws ID3v2Exception {
-		if(frameID.length() == 3 || getSupportClass(frameID, true) != null){
+		if(frameID.length() == 4 || getSupportClass(frameID, true) != null){
 			this.frameID = frameID;
 			byte[] frameIDBytes;
 			try {
@@ -121,16 +120,17 @@ public class ID3v22Frame implements ID3v2Frame{
 	private void setFrameSize(int size){
 		this.frameSize = size;
 		byte sizeBytes[] = ByteBuffer.allocate(4).putInt(this.frameSize).array();
-		this.headerRawData[3] = sizeBytes[1];
-		this.headerRawData[4] = sizeBytes[2];
-		this.headerRawData[5] = sizeBytes[3];
+		this.headerRawData[4] = sizeBytes[0];
+		this.headerRawData[5] = sizeBytes[1];
+		this.headerRawData[6] = sizeBytes[2];
+		this.headerRawData[7] = sizeBytes[3];
 		return;
 	}
 	
 
 	@Override
 	public String getOptionDesc(String frameID) {
-		ID3v22FrameBody frameBody = getSupportClass(frameID, true);
+		ID3v23FrameBody frameBody = getSupportClass(frameID, true);
 		if(frameBody != null){
 			return frameBody.getOptionDesc();
 		}else{
@@ -138,25 +138,25 @@ public class ID3v22Frame implements ID3v2Frame{
 		}
 	}
 	
-	protected ID3v22FrameBody getSupportClass(String frameID, boolean forUpdate) {
-		if(frameID.length() != 3){
+	protected ID3v23FrameBody getSupportClass(String frameID, boolean forUpdate) {
+		if(frameID.length() != 4){
 			return null;
 		}
 		
-		String supportClassName = String.format("kizitorashiro.mp3meta.id3v22.%s", frameID);
+		String supportClassName = String.format("kizitorashiro.mp3meta.id3v23.%s", frameID);
 		Class<?> supportClass = null;
 		try {
 			supportClass = Class.forName(supportClassName);
 		}catch(ClassNotFoundException e){
 			if(!forUpdate && frameID.startsWith("T")){
-				supportClass = kizitorashiro.mp3meta.id3v22.TXX.class;
+				supportClass = kizitorashiro.mp3meta.id3v23.TXXX.class;
 			}else{
 				return null;
 			}
 		}
-		ID3v22FrameBody frameBody = null;
+		ID3v23FrameBody frameBody = null;
 		try{
-			frameBody = (ID3v22FrameBody) supportClass.newInstance();
+			frameBody = (ID3v23FrameBody) supportClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			return null;
 		}
